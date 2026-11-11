@@ -1,0 +1,26 @@
+# Bytecode and virtualenvs
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+.env
+
+# Tools / OS
+.ipynb_checkpoints/
+.DS_Store
+.idea/
+.vscode/
+
+# The raw job-posting file is ~10 MB and is not committed.
+# See data/README.md for how to obtain it.
+data/*.ods
+data/*.xlsx
+data/*.csv
+data/*.csv.gz
+data/*.parquet
+!data/README.md
+
+# Local scratch
+*.log
+.pytest_cache/
