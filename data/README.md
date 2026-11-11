@@ -1,7 +1,7 @@
 # Data
 
 The dataset is a table of English-language job postings used in the
-[khoahochatde.com](https://khoahochatde.com) machine-learning course
+Viet Nguyen AI machine-learning course
 (`final_project.ods`, about 10 MB). It is **not** committed to this
 repository because of its size.
 

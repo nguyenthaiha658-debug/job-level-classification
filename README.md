@@ -4,7 +4,7 @@
 
 ## English summary
 
-This project classifies the career level of an English-language job posting from its title, description, location, function and industry. It starts from an exercise in the [khoahochatde.com](https://khoahochatde.com) machine-learning course and is rewritten as a small, reproducible experiment: a scikit-learn / imbalanced-learn pipeline, a fair comparison of Random Forest, Logistic Regression and LinearSVC, and three ways of dealing with a heavily imbalanced six-class target (`class_weight='balanced'`, `RandomOverSampler`, and `SMOTE`, all inside an `imblearn` pipeline so resampling happens only on training folds).
+This project classifies the career level of an English-language job posting from its title, description, location, function and industry. It starts from an exercise in the Viet Nguyen AI machine-learning course and is rewritten as a small, reproducible experiment: a scikit-learn / imbalanced-learn pipeline, a fair comparison of Random Forest, Logistic Regression and LinearSVC, and three ways of dealing with a heavily imbalanced six-class target (`class_weight='balanced'`, `RandomOverSampler`, and `SMOTE`, all inside an `imblearn` pipeline so resampling happens only on training folds).
 
 On a held-out test set of 1,615 postings, a course-style Random Forest baseline reaches **75.85% accuracy** but only **0.375 macro F1**, because it almost never predicts the rare classes. Logistic Regression with SMOTE reaches **0.654 macro F1** and **73.50% accuracy**. The accuracy drop is small; the gain comes from much better recall on mid- and rare classes. The smallest class has only four examples in the whole dataset (one in the test set), so its perfect F1 in that run is not a reliable result and is called out below.
 
@@ -16,7 +16,7 @@ Cho một tin tuyển dụng tiếng Anh với các trường `title`, `descript
 
 ## Dữ liệu
 
-Bảng `final_project.ods` đi kèm khóa học khoahochatde.com: 8,074 dòng, sáu cột. Một dòng bị loại vì thiếu mô tả, còn **8,073** mẫu.
+Bảng `final_project.ods` đi kèm khóa học Viet Nguyen AI: 8,074 dòng, sáu cột. Một dòng bị loại vì thiếu mô tả, còn **8,073** mẫu.
 
 | `career_level` | Số mẫu | Tỷ lệ |
 |---|---:|---:|
@@ -95,4 +95,4 @@ Kết quả được ghi vào `results/metrics.csv`, `results/confusion_matrix.p
 
 ## Nguồn
 
-Dựa trên bài tập của khóa học machine learning tại [khoahochatde.com](https://khoahochatde.com). Phần thí nghiệm, cấu trúc code, sửa lỗi và phân tích kết quả được làm thêm trên nền bài tập đó.
+Dựa trên bài tập của khóa học machine learning tại Viet Nguyen AI. Phần thí nghiệm, cấu trúc code, sửa lỗi và phân tích kết quả được làm thêm trên nền bài tập đó.
