@@ -15,7 +15,7 @@ repository because of its size.
 If you already have the course materials unpacked, the scripts will
 look for the original path as a fallback:
 
-`.../dữ liệu/final_project (khoahochatde.com) (ods)/final_project (khoahochatde.com).ods`
+`final_project.ods` (file dữ liệu đi kèm khóa học)
 
 The table has 8,074 rows and six columns. One row is dropped because
 the description is missing. The target `career_level` is heavily

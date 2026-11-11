@@ -8,7 +8,7 @@ This project classifies the career level of an English-language job posting from
 
 On a held-out test set of 1,615 postings, a course-style Random Forest baseline reaches **75.85% accuracy** but only **0.375 macro F1**, because it almost never predicts the rare classes. Logistic Regression with SMOTE reaches **0.654 macro F1** and **73.50% accuracy**. The accuracy drop is small; the gain comes from much better recall on mid- and rare classes. The smallest class has only four examples in the whole dataset (one in the test set), so its perfect F1 in that run is not a reliable result and is called out below.
 
-This work is based on exercises from the khoahochatde.com ML course.
+This work is based on exercises from the Viet Nguyen AI ML course.
 
 ## Bài toán
 
@@ -95,4 +95,4 @@ Kết quả được ghi vào `results/metrics.csv`, `results/confusion_matrix.p
 
 ## Nguồn
 
-Dựa trên bài tập của khóa học machine learning tại Viet Nguyen AI. Phần thí nghiệm, cấu trúc code, sửa lỗi và phân tích kết quả được làm thêm trên nền bài tập đó.
+Dựa trên bài tập của khóa học machine learning của Viet Nguyen AI. Phần thí nghiệm, cấu trúc code, sửa lỗi và phân tích kết quả được làm thêm trên nền bài tập đó.
