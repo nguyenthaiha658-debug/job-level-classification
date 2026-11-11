@@ -1,0 +1,12 @@
+                                        precision    recall  f1-score   support
+
+  senior_specialist_or_project_manager      0.872     0.866     0.869       868
+                   manager_team_leader      0.662     0.654     0.658       534
+                        bereichsleiter      0.486     0.542     0.512       192
+         director_business_unit_leader      0.667     0.571     0.615        14
+                            specialist      0.000     0.000     0.000         6
+managing_director_small_medium_company      0.000     0.000     0.000         1
+
+                              accuracy                          0.751      1615
+                             macro avg      0.448     0.439     0.442      1615
+                          weighted avg      0.751     0.751     0.751      1615

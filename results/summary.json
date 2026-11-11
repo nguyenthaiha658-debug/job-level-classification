@@ -1,0 +1,92 @@
+{
+  "n_train": 6458,
+  "n_test": 1615,
+  "class_counts": {
+    "senior_specialist_or_project_manager": 4337,
+    "manager_team_leader": 2672,
+    "bereichsleiter": 960,
+    "director_business_unit_leader": 70,
+    "specialist": 30,
+    "managing_director_small_medium_company": 4
+  },
+  "best_experiment": "logreg_smote",
+  "metrics": [
+    {
+      "experiment": "rf_baseline",
+      "model": "RandomForest",
+      "handling": "none (course-style baseline)",
+      "accuracy": 0.7585,
+      "macro_f1": 0.3746,
+      "weighted_f1": 0.7322,
+      "best_params": "{\"select__percentile\": 5}",
+      "cv_macro_f1": 0.3276,
+      "fit_seconds": 7.1
+    },
+    {
+      "experiment": "rf_balanced",
+      "model": "RandomForest",
+      "handling": "class_weight='balanced'",
+      "accuracy": 0.7511,
+      "macro_f1": 0.4425,
+      "weighted_f1": 0.751,
+      "best_params": "{\"select__percentile\": 5}",
+      "cv_macro_f1": 0.4272,
+      "fit_seconds": 6.2
+    },
+    {
+      "experiment": "rf_ros",
+      "model": "RandomForest",
+      "handling": "RandomOverSampler (train folds only)",
+      "accuracy": 0.7548,
+      "macro_f1": 0.4402,
+      "weighted_f1": 0.7415,
+      "best_params": "{\"select__percentile\": 5}",
+      "cv_macro_f1": 0.4026,
+      "fit_seconds": 7.3
+    },
+    {
+      "experiment": "logreg_balanced",
+      "model": "LogisticRegression",
+      "handling": "class_weight='balanced'",
+      "accuracy": 0.7245,
+      "macro_f1": 0.628,
+      "weighted_f1": 0.7328,
+      "best_params": "{\"model__C\": 2.0, \"select__percentile\": 10}",
+      "cv_macro_f1": 0.4631,
+      "fit_seconds": 15.5
+    },
+    {
+      "experiment": "logreg_smote",
+      "model": "LogisticRegression",
+      "handling": "SMOTE (k=1, train folds only)",
+      "accuracy": 0.735,
+      "macro_f1": 0.6535,
+      "weighted_f1": 0.742,
+      "best_params": "{\"model__C\": 2.0, \"select__percentile\": 10}",
+      "cv_macro_f1": 0.4707,
+      "fit_seconds": 20.4
+    },
+    {
+      "experiment": "linearsvc_balanced",
+      "model": "LinearSVC",
+      "handling": "class_weight='balanced'",
+      "accuracy": 0.7492,
+      "macro_f1": 0.6364,
+      "weighted_f1": 0.7489,
+      "best_params": "{\"model__C\": 2.0, \"select__percentile\": 10}",
+      "cv_macro_f1": 0.4251,
+      "fit_seconds": 8.0
+    },
+    {
+      "experiment": "linearsvc_ros",
+      "model": "LinearSVC",
+      "handling": "RandomOverSampler (train folds only)",
+      "accuracy": 0.7276,
+      "macro_f1": 0.6272,
+      "weighted_f1": 0.7334,
+      "best_params": "{\"model__C\": 0.5, \"select__percentile\": 10}",
+      "cv_macro_f1": 0.4282,
+      "fit_seconds": 22.8
+    }
+  ]
+}

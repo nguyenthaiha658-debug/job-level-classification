@@ -1,0 +1,8 @@
+experiment,model,handling,accuracy,macro_f1,weighted_f1,best_params,cv_macro_f1,fit_seconds
+rf_baseline,RandomForest,none (course-style baseline),0.7585,0.3746,0.7322,"{""select__percentile"": 5}",0.3276,7.1
+rf_balanced,RandomForest,class_weight='balanced',0.7511,0.4425,0.751,"{""select__percentile"": 5}",0.4272,6.2
+rf_ros,RandomForest,RandomOverSampler (train folds only),0.7548,0.4402,0.7415,"{""select__percentile"": 5}",0.4026,7.3
+logreg_balanced,LogisticRegression,class_weight='balanced',0.7245,0.628,0.7328,"{""model__C"": 2.0, ""select__percentile"": 10}",0.4631,15.5
+logreg_smote,LogisticRegression,"SMOTE (k=1, train folds only)",0.735,0.6535,0.742,"{""model__C"": 2.0, ""select__percentile"": 10}",0.4707,20.4
+linearsvc_balanced,LinearSVC,class_weight='balanced',0.7492,0.6364,0.7489,"{""model__C"": 2.0, ""select__percentile"": 10}",0.4251,8.0
+linearsvc_ros,LinearSVC,RandomOverSampler (train folds only),0.7276,0.6272,0.7334,"{""model__C"": 0.5, ""select__percentile"": 10}",0.4282,22.8
