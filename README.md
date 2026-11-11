@@ -1,22 +1,32 @@
 # Phân loại cấp bậc tin tuyển dụng
 
-**Job-level classification from posting text**
+**Predict a job's career level from the posting text**
 
 ## English summary
 
-This project classifies the career level of an English-language job posting from its title, description, location, function and industry. It starts from an exercise in the Viet Nguyen AI machine-learning course and is rewritten as a small, reproducible experiment: a scikit-learn / imbalanced-learn pipeline, a fair comparison of Random Forest, Logistic Regression and LinearSVC, and three ways of dealing with a heavily imbalanced six-class target (`class_weight='balanced'`, `RandomOverSampler`, and `SMOTE`, all inside an `imblearn` pipeline so resampling happens only on training folds).
+This project reads an English job posting and predicts its career level, such as specialist, manager, or director. It uses the title, description, location, job function, and industry.
 
-On a held-out test set of 1,615 postings, a course-style Random Forest baseline reaches **75.85% accuracy** but only **0.375 macro F1**, because it almost never predicts the rare classes. Logistic Regression with SMOTE reaches **0.654 macro F1** and **73.50% accuracy**. The accuracy drop is small; the gain comes from much better recall on mid- and rare classes. The smallest class has only four examples in the whole dataset (one in the test set), so its perfect F1 in that run is not a reliable result and is called out below.
+There are six career levels. Some levels have many examples. Others have very few. The rarest level has only four postings in the whole dataset.
 
-This work is based on exercises from the Viet Nguyen AI ML course.
+The work starts from exercises in the Viet Nguyen AI machine learning course. I rewrote the code and ran more tests. I compared Random Forest, Logistic Regression, and LinearSVC. I also tried three ways to help the rare levels:
+
+- give rare levels more weight while training
+- copy rare examples so they show up more often (only in the training data)
+- create extra made-up examples for rare levels (SMOTE), also only in the training data
+
+On 1,615 postings held out for testing, a simple Random Forest gets **75.85% accuracy** but only **0.375 macro F1**. It almost never predicts the rare levels. Logistic Regression with SMOTE gets **0.654 macro F1** and **73.50% accuracy**. Accuracy falls only a little. The model does much better on levels with fewer examples. The rarest level has just one posting in the test set, so a perfect score on that one example is not reliable. This is explained below.
+
+This work is based on exercises from the Viet Nguyen AI machine learning course.
 
 ## Bài toán
 
-Cho một tin tuyển dụng tiếng Anh với các trường `title`, `description`, `location`, `function` và `industry`, hãy dự đoán `career_level` (6 lớp). Đây là bài phân loại văn bản cổ điển, khó chủ yếu vì **mất cân bằng lớp** và vì các cấp bậc kề nhau (chuyên gia cao cấp / quản lý / trưởng bộ phận) dùng ngôn ngữ khá giống nhau.
+Cho một tin tuyển dụng tiếng Anh (tiêu đề, mô tả, địa điểm, chức năng, ngành), hãy đoán cấp bậc công việc. Có 6 cấp.
+
+Việc này khó vì hai lý do. Một số cấp có rất ít ví dụ. Các cấp gần nhau (chuyên gia cao cấp, quản lý, trưởng bộ phận) lại dùng lời lẽ khá giống nhau.
 
 ## Dữ liệu
 
-Bảng `final_project.ods` đi kèm khóa học Viet Nguyen AI: 8,074 dòng, sáu cột. Một dòng bị loại vì thiếu mô tả, còn **8,073** mẫu.
+Dữ liệu là file `final_project.ods` từ khóa học Viet Nguyen AI. Có 8,074 dòng và sáu cột. Một dòng bị bỏ vì thiếu mô tả. Còn **8,073** tin.
 
 | `career_level` | Số mẫu | Tỷ lệ |
 |---|---:|---:|
@@ -27,28 +37,22 @@ Bảng `final_project.ods` đi kèm khóa học Viet Nguyen AI: 8,074 dòng, sá
 | specialist | 30 | 0.37% |
 | managing_director_small_medium_company | 4 | 0.05% |
 
-File gốc khoảng 10 MB nên **không được commit**. Cách lấy dữ liệu nằm trong [`data/README.md`](data/README.md).
+File gốc khoảng 10 MB nên không đưa vào GitHub. Cách lấy file nằm trong [`data/README.md`](data/README.md).
 
-Chia train/test 80/20, `stratify` theo nhãn, `random_state=42`: 6,458 / 1,615 mẫu. Lớp nhỏ nhất có 3 mẫu ở tập train và 1 mẫu ở tập test.
+Tôi dùng 80% số tin để học và 20% để kiểm tra, và giữ tỷ lệ các cấp ở hai tập gần giống nhau: 6,458 tin để học, 1,615 tin để kiểm tra. Cấp hiếm nhất có 3 tin trong tập học và 1 tin trong tập kiểm tra.
 
-## Phương pháp
+## Cách làm
 
-- Làm sạch `location`: với các chuỗi dạng `Houston, TX` chỉ giữ mã bang (`TX`). Regex được viết bằng raw string để không còn cảnh báo escape như trong script gốc.
-- Đặc trưng (cùng họ đặc trưng với bài tập, viết lại cho gọn):
-  - TF-IDF unigram trên `title` và `industry`
-  - TF-IDF unigram + bigram trên `description`, `min_df=0.01`, `max_df=0.95`
-  - One-hot trên `location` và `function` (`handle_unknown='ignore'`)
-- Chọn đặc trưng bằng `SelectPercentile(chi2)`, lưới nhỏ `{5, 10}`.
-- Mô hình: Random Forest (baseline giống hướng của bài tập), Logistic Regression, LinearSVC.
-- Xử lý mất cân bằng (đây là phần mở rộng chính):
-  1. không làm gì (baseline)
-  2. `class_weight='balanced'`
-  3. `RandomOverSampler` hoặc `SMOTE(k_neighbors=1)` đặt **trong** `imblearn.pipeline.Pipeline`, sau bước biến đổi, để chỉ resample các fold huấn luyện. `k_neighbors=1` vì lớp nhỏ nhất không đủ mẫu cho giá trị mặc định là 5.
-- `GridSearchCV` 3-fold, stratified, tối ưu **macro F1** (phù hợp hơn accuracy hay `recall_weighted` khi các lớp hiếm mới là chỗ mô hình yếu). Lưới của mô hình tuyến tính thêm `C ∈ {0.5, 2.0}`.
+- Với địa điểm kiểu `Houston, TX`, tôi chỉ giữ mã bang (`TX`).
+- Tôi biến chữ trong tiêu đề, mô tả và ngành thành số. Địa điểm và chức năng cũng được đổi thành số.
+- Tôi chỉ giữ một phần thông tin hữu ích nhất (5% hoặc 10%).
+- Tôi so sánh Random Forest, Logistic Regression và LinearSVC.
+- Vì một số cấp có rất ít ví dụ, tôi thử ba cách: không làm gì thêm; tăng trọng số cho cấp hiếm; sao chép hoặc tạo thêm ví dụ cho cấp hiếm. Hai cách sau chỉ dùng trên dữ liệu học, không đụng tới dữ liệu kiểm tra.
+- Tôi chọn mô hình theo **macro F1**. Đây là điểm trung bình trên cả 6 cấp, nên cấp hiếm cũng được tính ngang với cấp phổ biến. Accuracy chỉ cho biết đoán đúng bao nhiêu phần trăm. Số này dễ trông đẹp nếu mô hình chỉ giỏi các cấp có nhiều tin.
 
 ## Kết quả
 
-Số liệu dưới đây là kết quả chạy thật trên tập test (không phải số viết tay). Macro F1 là tiêu chí chọn mô hình tốt nhất.
+Các số dưới đây là kết quả chạy thật trên tập kiểm tra, không phải số viết tay. Macro F1 được dùng để chọn mô hình tốt nhất.
 
 | Thí nghiệm | Mô hình | Xử lý mất cân bằng | Accuracy | Macro F1 | Weighted F1 | Tham số tốt nhất (CV) |
 |---|---|---|---:|---:|---:|---|
@@ -62,24 +66,24 @@ Số liệu dưới đây là kết quả chạy thật trên tập test (không
 
 ![Ma trận nhầm lẫn của mô hình tốt nhất](results/confusion_matrix.png)
 
-Quan sát chính:
+Ý nghĩa chính:
 
-- Baseline Random Forest có **accuracy cao nhất** (75.85%) nhưng macro F1 chỉ 0.375: mô hình gần như không dự đoán `specialist` và `managing_director_...` (F1 = 0), và recall của `bereichsleiter` chỉ 0.146.
-- Cân bằng trọng số hoặc oversampling giúp Random Forest tăng macro F1 lên khoảng 0.44, vẫn bỏ sót hai lớp hiếm nhất.
-- Các mô hình tuyến tính hơn hẳn trên macro F1 (0.63–0.65). `logreg_smote` tốt nhất theo macro F1; `linearsvc_balanced` gần kề (0.636) và giữ accuracy cao hơn (74.92%).
-- Phần lớn nhầm lẫn nằm giữa các cấp kề nhau (senior specialist ↔ manager ↔ bereichsleiter), đúng với việc mô tả công việc của các cấp này chồng lên nhau.
-- **Lưu ý về lớp nhỏ nhất:** cả bộ dữ liệu chỉ có 4 mẫu `managing_director_small_medium_company`, tập test có đúng 1 mẫu. F1 = 1.00 của lớp này ở `logreg_smote` không có ý nghĩa thống kê; chỉ cần lần chạy khác là số macro F1 sẽ đổi. Phần cải thiện đáng tin hơn là recall của `bereichsleiter` (0.146 → 0.625) và `specialist` (0 → 0.667, dù chỉ có 6 mẫu test). Macro F1 trên 5 lớp còn lại (bỏ MD) vẫn cao hơn baseline rõ rệt.
+- Random Forest đơn giản có **accuracy cao nhất** (75.85%), nhưng macro F1 chỉ 0.375. Nó gần như không đoán `specialist` và `managing_director_...` (F1 = 0). Với `bereichsleiter`, nó chỉ bắt đúng 0.146 số tin thật.
+- Tăng trọng số hoặc sao chép thêm ví dụ giúp Random Forest đưa macro F1 lên khoảng 0.44. Hai cấp hiếm nhất vẫn thường bị bỏ sót.
+- Logistic Regression và LinearSVC hơn hẳn trên macro F1 (0.63–0.65). `logreg_smote` là tốt nhất theo macro F1. `linearsvc_balanced` gần kề (0.636) và giữ accuracy cao hơn (74.92%).
+- Mô hình hay nhầm giữa các cấp gần nhau (senior specialist, manager, bereichsleiter). Điều này hợp lý, vì mô tả việc làm của các cấp này khá giống nhau.
+- **Lưu ý về cấp hiếm nhất:** cả bộ dữ liệu chỉ có 4 tin `managing_director_small_medium_company`. Tập kiểm tra có đúng 1 tin. F1 = 1.00 của cấp này ở `logreg_smote` không đáng tin. Chỉ cần lần chạy khác, số macro F1 cũng có thể đổi. Phần cải thiện đáng tin hơn là `bereichsleiter` (bắt đúng 0.146 → 0.625) và `specialist` (0 → 0.667, dù chỉ có 6 tin kiểm tra). Nếu bỏ cấp giám đốc doanh nghiệp nhỏ, macro F1 trên 5 cấp còn lại vẫn cao hơn mô hình đơn giản một cách rõ rệt.
 
-Báo cáo từng lớp nằm trong `results/classification_reports/`.
+Báo cáo từng cấp nằm trong `results/classification_reports/`.
 
-## Những gì khác với script gốc của khóa học
+## Khác gì so với bài tập gốc
 
-- Viết lại thành repo có cấu trúc (`src/`, script thí nghiệm, `requirements.txt`), không phải sửa nhẹ file `job_cls.py`.
-- Sửa regex location (raw string) để hết cảnh báo escape.
+- Code được viết lại thành một repo gọn (`src/`, script chạy thử, `requirements.txt`), không phải sửa nhẹ file cũ.
+- Sửa cách đọc địa điểm để hết cảnh báo khi chạy.
 - So sánh thêm Logistic Regression và LinearSVC, không chỉ Random Forest.
-- Đưa oversampling vào đúng chỗ (pipeline, chỉ trên fold huấn luyện), thay vì resample cả tập train một lần rồi mới cross-validate.
-- Đổi metric tối ưu sang macro F1 và báo cáo đủ accuracy / macro F1 / weighted F1.
-- Giữ lưới siêu tham số nhỏ để chạy được trên máy cá nhân (toàn bộ 7 thí nghiệm xong trong khoảng 2 phút trên máy này).
+- Việc sao chép / tạo thêm ví dụ chỉ xảy ra trên dữ liệu học, không lẫn vào dữ liệu kiểm tra.
+- Báo cáo đủ accuracy, macro F1 và weighted F1. Chọn mô hình theo macro F1.
+- Phần chỉnh tham số giữ nhỏ, để chạy được trên máy cá nhân. Cả 7 thử nghiệm xong trong khoảng 2 phút trên máy này.
 
 ## Cách chạy
 
@@ -95,4 +99,6 @@ Kết quả được ghi vào `results/metrics.csv`, `results/confusion_matrix.p
 
 ## Nguồn
 
-Dựa trên bài tập của khóa học machine learning của Viet Nguyen AI. Phần thí nghiệm, cấu trúc code, sửa lỗi và phân tích kết quả được làm thêm trên nền bài tập đó.
+This work is based on exercises from the Viet Nguyen AI machine learning course.
+
+Dựa trên bài tập của khóa học machine learning của Viet Nguyen AI. Phần thử nghiệm, cấu trúc code, sửa lỗi và phân tích kết quả được làm thêm trên nền bài tập đó.
